@@ -16,11 +16,16 @@ const Register = () => {
       name,
       password,
     };
+    // Validate the fields
+    if (!validateFields()) {
+      return;
+    }
 
     // Send a post request to the backend API
     axios
-      .post("http://192.168.0.242:8000/register", user)
+      .post("http://192.168.10.242:8000/register", user)
       .then((response) => {
+        console.debug(response)
         Alert.alert("Registered successfully", "You have registered successfully");
         setEmail("");
         setName("");
@@ -31,6 +36,35 @@ const Register = () => {
         Alert.alert('Error registering user', error.message);
       });
   };
+
+  const validateFields = () => {
+    // Regular expression for email validation
+    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+
+    if (!name) {
+      Alert.alert('Validation Error', 'Please enter your name');
+      return false;
+    }
+    if (!email) {
+      Alert.alert('Validation Error', 'Please enter your email');
+      return false;
+    }
+    if (!emailRegex.test(email)) {
+      Alert.alert('Validation Error', 'Please enter a valid email address');
+      return false;
+    }
+    if (!password) {
+      Alert.alert('Validation Error', 'Please enter your password');
+      return false;
+    }
+    if (password.length < 6) {
+      Alert.alert('Validation Error', 'Password should be at least 6 characters long');
+      return false;
+    }
+
+    return true;
+  };
+
 
   return (
     <View style={styles.container}>

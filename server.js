@@ -52,7 +52,7 @@ const sendVerificationEmail = async (email, verificationToken) => {
     from: "amazon.com",
     to: email,
     subject: "Email Verification",
-    text: `please click the following link to verify your email : http://192.168.0.242:8000/verify/${verificationToken}`
+    text: `please click the following link to verify your email : http://192.168.10.242:8000/verify/${verificationToken}`
   }
 
 
@@ -124,4 +124,33 @@ app.get("/verify/:token", async (req, res) => {
   catch (err) {
     res.status(500).json("Email verification failed");
   }
+})
+
+const generateSecretKey = () => {
+  return crypto.randomBytes(32).toString("hex");
+}
+const secretKey = generateSecretKey();
+// end point to login user
+
+app.post("/login", async (req, res) => {
+try{
+  const { email, password } = req.body;
+
+  const user = await User.findOne({ email });
+
+  // check if user is exist with email
+  if (!user) {
+    return res.status(401).json("Invalid username or password");
+  }
+  //check if password is correct
+  if (user.password != password) {
+    return res.status(401).json("Invalid password");
+  }
+
+  const token = jwt.sign({ userId: user._id }, secretKey);
+
+  res.status(200).json({token});
+   }catch(err){
+    res.status(500).json({message:"Login failed"});
+   }
 })
