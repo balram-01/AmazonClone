@@ -7,6 +7,7 @@ import Register from '../Screens/Register';
 import Home from '../Screens/Home';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+import ProductInfo from '../Screens/ProductInfo';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -95,6 +96,10 @@ const StackNavigator = () => {
           name="Main"
           options={{ headerShown: false }}
           component={BottomTabs} />
+        <Stack.Screen
+          name="Info"
+          options={{ headerShown: false }}
+          component={ProductInfo} />
       </Stack.Navigator>
 
     </NavigationContainer>
