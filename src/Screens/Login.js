@@ -1,12 +1,43 @@
-import { StyleSheet, Text, View, Image, KeyboardAvoidingView, TextInput, Pressable } from 'react-native'
-import React, { useState } from 'react'
+import { StyleSheet, Text, View, Image, KeyboardAvoidingView, TextInput, Pressable, Alert } from 'react-native'
+import React, { useState, useEffect } from 'react'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const Login = () => {
   const navigation = useNavigation();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const logoURI = "https://assets.stickpng.com/thumbs/6160562276000b00045a7d97.png";
+
+
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      try {
+        AsyncStorage.getItem('authToken').then((token) => {
+          if (token) {
+            navigation.replace("Main");
+          }
+        })
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    checkLoginStatus();
+  }, [])
+
+  const handleLogin = async () => {
+    const user = { email, password };
+    axios.post("http://192.168.10.242:8000/login", user).then(
+      (response) => {
+        let token = response.data.token;
+        AsyncStorage.setItem('authToken', token);
+        navigation.replace("Main");
+      }).catch((err) => {
+        Alert.alert("Login failed", err.message)
+        console.error("Login failed", err);
+      })
+  }
   return (
     <View style={styles.container}>
       <View>
@@ -121,6 +152,7 @@ const Login = () => {
         </View>
         <View style={{ marginTop: 40 }}>
           <Pressable
+            onPress={handleLogin}
             style={{
               width: 200,
               backgroundColor: "#FEBE10",
