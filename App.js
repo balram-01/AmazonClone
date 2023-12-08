@@ -6,7 +6,8 @@
  */
 
 import React from 'react';
-import type {PropsWithChildren} from 'react';
+import type { PropsWithChildren } from 'react';
+import { Provider } from 'react-redux';
 import {
   SafeAreaView,
   ScrollView,
@@ -25,12 +26,14 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 import StackNavigator from './src/navigation/StackNavigator';
-
+import Store from './Store';
+import { UserContext } from './UserContext';
 type SectionProps = PropsWithChildren<{
   title: string;
 }>;
 
-function Section({children, title}: SectionProps): JSX.Element {
+
+function Section({ children, title }: SectionProps): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
   return (
     <View style={styles.sectionContainer}>
@@ -61,13 +64,17 @@ function App(): JSX.Element {
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-    flex:1
+    flex: 1
   };
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-   <StackNavigator/>
-    </SafeAreaView>
+    <Provider store={Store}>
+      <UserContext>
+      <SafeAreaView style={backgroundStyle}>
+        <StackNavigator />
+        </SafeAreaView>
+      </UserContext>
+    </Provider>
   );
 }
 

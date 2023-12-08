@@ -1,13 +1,35 @@
 import { ScrollView, StyleSheet, Text, View, Pressable, TextInput, ImageBackground, Dimensions } from 'react-native'
 import Icon from "react-native-vector-icons/MaterialCommunityIcons"
 import React, { useState } from 'react'
-import { useRoute } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
+import { useDispatch, useSelector } from 'react-redux'
+import { addToCart } from '../redux/CartReducer'
 
 const ProductInfo = () => {
+    const navigation = useNavigation();
     const route = useRoute();
     const { width } = Dimensions.get("window");
-    const height = (width * 100) / 100;
+    const dispatch = useDispatch();
     const [addedToCart, setAddedToCart] = useState(false)
+    const height = (width * 100) / 100;
+
+
+    const addItemToCart = (item) => {
+        setAddedToCart(true);
+        dispatch(addToCart(item));
+        setTimeout(() => {
+            setAddedToCart(false);
+        }, 6000)
+
+    }
+    const buyProduct = (item) => {
+       dispatch(addToCart(route?.params?.item));
+        navigation.navigate("Confirm");
+        
+    }
+    const cart = useSelector((state) => state.cart.cart)
+
+    console.log('cart', cart)
     return (
         <ScrollView style={{
             flex: 1, backgroundColor: "white"
@@ -42,7 +64,7 @@ const ProductInfo = () => {
                 <Icon name="microphone" size={24} color="black" />
             </View>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                {route.params?.carouselImages.map((item, index) => (
+                {route.params?.carouselImages?.map((item, index) => (
                     <ImageBackground
                         source={{ uri: item }}
                         style={{ width, height, marginTop: 25 }}
@@ -169,7 +191,7 @@ const ProductInfo = () => {
                 IN Stock
             </Text>
             <Pressable
-                // onPress={() => addItemToCart(route?.params?.item)}
+                onPress={() => addItemToCart(route?.params?.item)}
                 style={{
                     backgroundColor: "#FFC72C",
                     padding: 10,
@@ -182,14 +204,15 @@ const ProductInfo = () => {
             >
                 {addedToCart ? (
                     <View>
-                        <Text>Added to Cart</Text>
+                        <Text style={{color:"white"}}>Added to Cart</Text>
                     </View>
                 ) : (
-                    <Text>Add to Cart</Text>
+                        <Text style={{ color: "white" }}>Add to Cart</Text>
                 )}
             </Pressable>
 
             <Pressable
+                onPress={buyProduct}
                 style={{
                     backgroundColor: "#FFAC1C",
                     padding: 10,
@@ -200,7 +223,7 @@ const ProductInfo = () => {
                     marginVertical: 10,
                 }}
             >
-                <Text>Buy Now</Text>
+                <Text style={{color:"white"}}>Buy Now</Text>
             </Pressable>
 
 

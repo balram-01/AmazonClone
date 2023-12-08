@@ -11,6 +11,7 @@ const Register = () => {
   const logoURI = "https://assets.stickpng.com/thumbs/6160562276000b00045a7d97.png";
 
   const handleRegister = () => {
+  
     const user = {
       email,
       name,
@@ -20,16 +21,22 @@ const Register = () => {
     if (!validateFields()) {
       return;
     }
-
+   
     // Send a post request to the backend API
     axios
-      .post("http://192.168.10.242:8000/register", user)
+      .post("http://192.168.21.159:8000/register", user)
       .then((response) => {
         console.debug(response)
-        Alert.alert("Registered successfully", "You have registered successfully");
-        setEmail("");
+       setEmail("");
         setName("");
         setPassword("");
+      Alert.alert("Registered successfully", "You have registered successfully", [
+
+          {
+          text: "OK",
+            onPress: () => navigation.goBack(),
+          },
+        ]);
       })
       .catch((error) => {
         console.error('error registering user', error);
@@ -203,7 +210,7 @@ const Register = () => {
             marginTop: 12
           }}
         >
-          <Text >
+          <Text  style={{color:'grey'}}>
             Keep me logged in
           </Text>
           <Text
