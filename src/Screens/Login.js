@@ -28,7 +28,7 @@ const Login = () => {
 
   const handleLogin = async () => {
     const user = { email, password };
-    axios.post("http://192.168.10.242:8000/login", user).then(
+    axios.post("http://192.168.21.159:8000/login", user).then(
       (response) => {
         let token = response.data.token;
         AsyncStorage.setItem('authToken', token);
@@ -138,7 +138,7 @@ const Login = () => {
             marginTop: 12
           }}
         >
-          <Text >
+          <Text style={{color:'grey'}} >
             Keep me logged in
           </Text>
           <Text
